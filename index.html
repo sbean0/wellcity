@@ -27,8 +27,12 @@
     button:hover { background: #334155; border-color: var(--primary); }
     button.active { background: var(--primary); color: var(--bg); border-color: var(--primary); }
     footer { text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.8rem; position: relative; }
-    .submit-link { position: absolute; bottom: 20px; right: 20px; color: var(--text-muted); font-size: 0.7rem; text-decoration: none; opacity: 0.6; }
-    .submit-link:hover { opacity: 1; color: var(--primary); }
+    .submit-link { color: var(--primary); font-size: 0.8rem; text-decoration: none; display: block; margin-top: 10px; cursor: pointer; }
+    .submit-link:hover { text-decoration: underline; }
+    /* Form Modal Styles */
+    #formModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
+    .form-box { background: var(--surface); padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; }
+    input, textarea { width: 100%; margin: 10px 0; padding: 10px; border-radius: 5px; border: 1px solid #334155; background: var(--bg); color: var(--text); box-sizing: border-box; }
   </style>
 </head>
 <body>
@@ -54,8 +58,22 @@
 
 <footer>
   <p>&copy; 2026 WellCity — Crowdsourced urban health intelligence.</p>
-  <a href="https://smartly.academy/form-url-here" target="_blank" class="submit-link">Submit Idea</a>
+  <a class="submit-link" onclick="document.getElementById('formModal').style.display='flex'">Submit Idea</a>
 </footer>
+
+<!-- Idea Submission Form -->
+<div id="formModal" onclick="this.style.display='none'">
+  <div class="form-box" onclick="event.stopPropagation()">
+    <form action="https://formsubmit.co/shellfishopenclaw@gmail.com" method="POST">
+      <h2 style="margin-top:0">Submit Idea</h2>
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <textarea name="message" placeholder="Your noise pollution idea..." required></textarea>
+      <input type="hidden" name="_next" value="https://sbean0.github.io/wellcity/">
+      <button type="submit" style="width:100%; margin-top:10px;">Send</button>
+    </form>
+  </div>
+</div>
 
 <script>
 const CENTER_LAT = 43.6532;
