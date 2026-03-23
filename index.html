@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WellCity — Sleep Well. Breathe Well. Live Well.</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    body { margin:0; font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; }
+    header { text-align:center; padding:20px; background:#1e2937; }
+    img.logo { max-height:120px; }
+    h1 { margin:0; font-size:2.5rem; color:#67e8f9; }
+    .tagline { font-size:1.1rem; color:#94a3b8; margin:8px 0 0; }
+    #map { height:70vh; }
+    .controls { position:absolute; top:20px; left:20px; background:#1e2937; padding:15px; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.5); }
+    button { margin:5px; padding:10px 16px; background:#67e8f9; color:#0f172a; border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
+    button.active { background:#22d3ee; }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="WellCity" class="logo">
+  <h1>WellCity</h1>
+  <p class="tagline">Sleep Well. Breathe Well. Live Well.</p>
+</header>
+
+<div id="map"></div>
+
+<div class="controls">
+  <button onclick="toggleLayer(0)" class="active">Noise (Night)</button>
+  <button onclick="toggleLayer(1)">Air Quality</button>
+  <button onclick="toggleLayer(2)">Garbage / Pet Waste</button>
+  <button onclick="toggleLayer(3)">Health Risk</button>
+</div>
+
+<script>
+// === EASY FORK SETTINGS (change these for other cities!) ===
+const DEFAULT_CITY = "Toronto";           // change to "Vancouver", "New York", etc.
+const CENTER_LAT = 43.6532;               // Toronto coords — swap for your city
+const CENTER_LNG = -79.3832;
+const ZOOM = 12;
+
+// Map setup
+const map = L.map('map').setView([CENTER_LAT, CENTER_LNG], ZOOM);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap'
+}).addTo(map);
+
+// Fake demo layers (you'll replace with real Supabase data later)
+let layers = [];
+layers[0] = L.circle([43.65, -79.38], {color: '#ef4444', fillOpacity: 0.4, radius: 1200}).bindPopup("Night noise hotspot — 105 dB Harley at 2am");
+layers[1] = L.circle([43.66, -79.40], {color: '#eab308', fillOpacity: 0.5, radius: 800}).bindPopup("AQHI 7 — moderate air risk");
+layers[2] = L.marker([43.64, -79.37]).bindPopup("Park with pet waste reports 💩");
+layers[3] = L.heatmapLayer ? null : L.circle([43.65, -79.38], {color: '#f97316', fillOpacity: 0.3, radius: 1500}).bindPopup("High combined health risk");
+
+function toggleLayer(n) {
+  document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  layers.forEach(l => map.removeLayer(l));
+  if (layers[n]) map.addLayer(layers[n]);
+}
+
+// Default: show nighttime noise layer
+toggleLayer(0);
+
+// PWA ready (users can "Add to Home Screen")
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+</script>
+
+</body>
+</html>
