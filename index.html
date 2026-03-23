@@ -26,7 +26,9 @@
     button { padding: 12px 20px; background: var(--surface); color: var(--text); border: 1px solid #334155; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
     button:hover { background: #334155; border-color: var(--primary); }
     button.active { background: var(--primary); color: var(--bg); border-color: var(--primary); }
-    footer { text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.8rem; }
+    footer { text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.8rem; position: relative; }
+    .submit-link { position: absolute; bottom: 20px; right: 20px; color: var(--text-muted); font-size: 0.7rem; text-decoration: none; opacity: 0.6; }
+    .submit-link:hover { opacity: 1; color: var(--primary); }
   </style>
 </head>
 <body>
@@ -52,6 +54,7 @@
 
 <footer>
   <p>&copy; 2026 WellCity — Crowdsourced urban health intelligence.</p>
+  <a href="https://smartly.academy/form-url-here" target="_blank" class="submit-link">Submit Idea</a>
 </footer>
 
 <script>
