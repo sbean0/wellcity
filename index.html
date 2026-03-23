@@ -3,57 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WellCity — Sleep Well. Breathe Well. Live Well.</title>
+  <title>WellCity — Live Better.</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
-    body { margin:0; font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; }
-    header { text-align:center; padding:20px; background:#1e2937; }
-    img.logo { max-height:120px; }
-    h1 { margin:0; font-size:2.5rem; color:#67e8f9; }
-    .tagline { font-size:1.1rem; color:#94a3b8; margin:8px 0 0; }
-    #map { height:70vh; }
-    .controls { position:absolute; top:20px; left:20px; background:#1e2937; padding:15px; border-radius:8px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.5); }
-    button { margin:5px; padding:10px 16px; background:#67e8f9; color:#0f172a; border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
-    button.active { background:#22d3ee; }
+    :root {
+      --bg: #0f172a;
+      --surface: #1e2937;
+      --primary: #67e8f9;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+    }
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    header { display: flex; align-items: center; justify-content: center; padding: 20px; background: var(--surface); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    .logo { height: 60px; margin-right: 15px; }
+    h1 { margin: 0; font-size: 1.8rem; color: var(--primary); }
+    .tagline { font-size: 0.9rem; color: var(--text-muted); margin-top: 4px; }
+    #map { height: 65vh; width: 100%; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+    .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
+    button { padding: 12px 20px; background: var(--surface); color: var(--text); border: 1px solid #334155; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    button:hover { background: #334155; border-color: var(--primary); }
+    button.active { background: var(--primary); color: var(--bg); border-color: var(--primary); }
+    footer { text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.8rem; }
   </style>
 </head>
 <body>
 
 <header>
-  <img src="logo.png" alt="WellCity" class="logo">
-  <h1>WellCity</h1>
-  <p class="tagline">Sleep Well. Breathe Well. Live Well.</p>
+  <img src="logo.png" alt="WellCity Logo" class="logo">
+  <div>
+    <h1>WellCity</h1>
+    <p class="tagline">Sleep Well. Breathe Well. Live Well.</p>
+  </div>
 </header>
 
 <div id="map"></div>
 
-<div class="controls">
-  <button onclick="toggleLayer(0)" class="active">Noise (Night)</button>
-  <button onclick="toggleLayer(1)">Air Quality</button>
-  <button onclick="toggleLayer(2)">Garbage / Pet Waste</button>
-  <button onclick="toggleLayer(3)">Health Risk</button>
+<div class="container">
+  <div class="controls">
+    <button onclick="toggleLayer(0)" class="active">Noise (Night)</button>
+    <button onclick="toggleLayer(1)">Air Quality</button>
+    <button onclick="toggleLayer(2)">Garbage / Pet Waste</button>
+    <button onclick="toggleLayer(3)">Health Risk</button>
+  </div>
 </div>
 
+<footer>
+  <p>&copy; 2026 WellCity — Crowdsourced urban health intelligence.</p>
+</footer>
+
 <script>
-// === EASY FORK SETTINGS (change these for other cities!) ===
-const DEFAULT_CITY = "Toronto";           // change to "Vancouver", "New York", etc.
-const CENTER_LAT = 43.6532;               // Toronto coords — swap for your city
+const CENTER_LAT = 43.6532;
 const CENTER_LNG = -79.3832;
 const ZOOM = 12;
 
-// Map setup
 const map = L.map('map').setView([CENTER_LAT, CENTER_LNG], ZOOM);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap'
 }).addTo(map);
 
-// Fake demo layers (you'll replace with real Supabase data later)
 let layers = [];
-layers[0] = L.circle([43.65, -79.38], {color: '#ef4444', fillOpacity: 0.4, radius: 1200}).bindPopup("Night noise hotspot — 105 dB Harley at 2am");
-layers[1] = L.circle([43.66, -79.40], {color: '#eab308', fillOpacity: 0.5, radius: 800}).bindPopup("AQHI 7 — moderate air risk");
-layers[2] = L.marker([43.64, -79.37]).bindPopup("Park with pet waste reports 💩");
-layers[3] = L.heatmapLayer ? null : L.circle([43.65, -79.38], {color: '#f97316', fillOpacity: 0.3, radius: 1500}).bindPopup("High combined health risk");
+layers[0] = L.circle([43.65, -79.38], {color: '#ef4444', fillOpacity: 0.4, radius: 1200}).bindPopup("Night noise hotspot");
+layers[1] = L.circle([43.66, -79.40], {color: '#eab308', fillOpacity: 0.5, radius: 800}).bindPopup("Moderate air risk");
+layers[2] = L.marker([43.64, -79.37]).bindPopup("Pet waste report");
+layers[3] = L.circle([43.65, -79.38], {color: '#f97316', fillOpacity: 0.3, radius: 1500}).bindPopup("Health risk area");
 
 function toggleLayer(n) {
   document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
@@ -61,14 +76,7 @@ function toggleLayer(n) {
   layers.forEach(l => map.removeLayer(l));
   if (layers[n]) map.addLayer(layers[n]);
 }
-
-// Default: show nighttime noise layer
 toggleLayer(0);
-
-// PWA ready (users can "Add to Home Screen")
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(() => {});
-}
 </script>
 
 </body>
